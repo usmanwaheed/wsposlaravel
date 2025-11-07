@@ -4,7 +4,26 @@ All endpoints are prefixed with `/api` and protected with Laravel Sanctum. Inclu
 
 ## Authentication
 
-Use the web login (`POST /login`) to obtain a session cookie or issue Sanctum tokens through custom logic (e.g., artisan command). Token issuance endpoints can be added on demand.
+Use the API login endpoint to obtain a bearer token for subsequent requests.
+
+### Obtain token
+`POST /api/login`
+
+Payload:
+```json
+{
+  "email": "admin@garment-pos.test",
+  "password": "password",
+  "device_name": "pos-terminal-1"
+}
+```
+
+The response contains a `token` and `token_type`. Include `Authorization: Bearer {token}` on protected API calls.
+
+### Revoke current token
+`POST /api/logout`
+
+Requires the bearer token in the request headers and revokes the current access token.
 
 ## Products
 
