@@ -21,6 +21,7 @@ class ProductRequest extends FormRequest
             'base_price' => ['required', 'numeric', 'min:0'],
             'tax_rate' => ['nullable', 'numeric', 'min:0'],
             'variations' => ['required', 'array', 'min:1'],
+            'variations.*.id' => ['nullable', 'integer', 'exists:product_variations,id'],
             'variations.*.color' => ['required', 'string', 'max:100'],
             'variations.*.size' => ['required', 'string', 'max:50'],
             'variations.*.sku' => ['required', 'string', 'max:191'],

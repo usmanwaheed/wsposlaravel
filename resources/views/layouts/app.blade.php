@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 <body class="bg-gray-100 text-gray-900">
     <div class="min-h-screen">
@@ -16,6 +17,13 @@
                         <span class="text-xl font-semibold">{{ config('app.name') }}</span>
                         <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">Dashboard</a>
                         <a href="{{ route('pos.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">POS</a>
+                        @can('manage-products')
+                            <a href="{{ route('products.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">Products</a>
+                            <a href="{{ route('inventory.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">Inventory</a>
+                        @endcan
+                        @can('view-reports')
+                            <a href="{{ route('orders.index') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">Orders</a>
+                        @endcan
                     </div>
                     <div class="flex items-center space-x-4">
                         @auth
@@ -34,10 +42,29 @@
 
         <main class="py-10">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                @if (session('status'))
+                    <div class="mb-6 rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="mb-6 rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        <p class="font-semibold">We ran into a few issues:</p>
+                        <ul class="mt-2 list-disc space-y-1 pl-5">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 {{ $slot ?? '' }}
                 @yield('content')
             </div>
         </main>
     </div>
+
+    @stack('scripts')
 </body>
 </html>
