@@ -7,8 +7,8 @@ use App\Models\Product;
 use App\Models\ProductVariation;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use App\Support\Barcode\Code128Generator;
 use Illuminate\Support\Facades\DB;
-use Picqer\Barcode\BarcodeGeneratorSVG;
 
 class ProductManagementController extends Controller
 {
@@ -122,7 +122,7 @@ class ProductManagementController extends Controller
     public function barcodes(Product $product): View
     {
         $product->load('variations');
-        $generator = new BarcodeGeneratorSVG();
+        $generator = app(Code128Generator::class);
 
         $labels = $product->variations->map(function (ProductVariation $variation) use ($generator) {
             $code = $variation->barcode ?: $variation->sku;
@@ -130,7 +130,7 @@ class ProductManagementController extends Controller
             return [
                 'variation' => $variation,
                 'code' => $code,
-                'svg' => $generator->getBarcode($code, BarcodeGeneratorSVG::TYPE_CODE_128),
+                'svg' => $generator->generate($code, 48, 2),
             ];
         });
 
