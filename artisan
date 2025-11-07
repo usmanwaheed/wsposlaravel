@@ -1,0 +1,23 @@
+#!/usr/bin/env php
+<?php
+
+use App\Console\Kernel;
+use Illuminate\Foundation\Application;
+
+require __DIR__.'/vendor/autoload.php';
+
+$app = Application::configure(basePath: __DIR__)
+    ->withKernels([
+        Kernel::class,
+    ])
+    ->withEvents()
+    ->withExceptions()
+    ->withCommands()
+    ->create();
+
+$kernel = $app->make(Kernel::class);
+
+exit($kernel->handle(
+    $input = new Symfony\Component\Console\Input\ArgvInput(),
+    new Symfony\Component\Console\Output\ConsoleOutput()
+));
